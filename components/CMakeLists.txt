@@ -20,8 +20,8 @@ add_library(Levels
     level/level.cpp
     level/sol.cpp
     level/sol.h
-	level/baseitemmanager.h
-	level/baseproperty.h)
+    level/baseitemmanager.h
+    level/baseproperty.h)
 target_link_libraries(Levels FAIO DiabloExe)
 set_target_properties(Levels PROPERTIES COMPILE_FLAGS "${FA_COMPILER_FLAGS}")
 
@@ -78,10 +78,10 @@ add_library(DiabloExe
     diabloexe/npc.cpp
     diabloexe/baseitem.cpp
     diabloexe/baseitem.h
-	diabloexe/uniqueitem.cpp
-	diabloexe/uniqueitem.h
-	diabloexe/characterstats.h
-	diabloexe/characterstats.cpp
+    diabloexe/uniqueitem.cpp
+    diabloexe/uniqueitem.h
+    diabloexe/characterstats.h
+    diabloexe/characterstats.cpp
     diabloexe/affix.cpp
     diabloexe/affix.h)
 target_link_libraries(DiabloExe ${Boost_Libraries} Misc)
@@ -117,3 +117,26 @@ add_library(Serial
     serial/bithackmacros.h
 )
 set_target_properties(Serial PROPERTIES COMPILE_FLAGS "${FA_COMPILER_FLAGS}")
+
+
+
+add_library(ecs
+    ecs/includes/TEscapeTypes.h
+    ecs/includes/TEscapeComponent.h
+    ecs/TEscapeComponent.cpp
+    ecs/includes/TEscapeEntity.h
+    ecs/TEscapeEntity.cpp
+    ecs/TEscapeEntityManager.h
+    ecs/TEscapeEntityManager.cpp
+    ecs/TEscapeGroupManager.h
+    ecs/TEscapeGroupManager.cpp
+    ecs/TEscapePrivate.h
+    ecs/includes/TEscapeSystem.h
+    ecs/TEscapeSystem.cpp
+    ecs/TEscapeSystemManager.h
+    ecs/TEscapeSystemManager.cpp
+    ecs/includes/TEscapeWorld.h
+    ecs/TEscapeWorld.cpp)
+include_directories(ecs/includes)
+target_link_libraries(ecs ${Boost_Libraries} Misc)
+set_target_properties(ecs PROPERTIES COMPILE_FLAGS "${FA_COMPILER_FLAGS}")
