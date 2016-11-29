@@ -65,6 +65,7 @@ include_directories ( SYSTEM
     ${Qt5Widgets_INCLUDE_DIRS}
     ${ENET_INCLUDE_DIR}
     "${PROJECT_SOURCE_DIR}/extern/StormLib/src/"
+    "${PROJECT_SOURCE_DIR}/extern/entityx/entityx/"
 )
 
 include_directories("${PROJECT_SOURCE_DIR}/components/")
@@ -82,6 +83,10 @@ endif()
 add_subdirectory (extern) 
 
 link_libraries(StormLib)
+link_libraries(entityx)
+
+
+
 
 add_subdirectory (components) 
 
@@ -120,3 +125,10 @@ add_subdirectory(apps/launcher)
 add_subdirectory(apps/fontgenerator)
 
 add_subdirectory(test)
+
+
+
+
+
+
+

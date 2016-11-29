@@ -54,3 +54,14 @@ target_link_libraries(StormLib ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES})
 if(UNIX)
     set_target_properties(StormLib PROPERTIES COMPILE_FLAGS "-w")
 endif()
+
+
+
+# entityx generate
+############################
+set(ENTITYX_BUILD_TESTING false CACHE BOOL "Enable building of tests.")
+set(ENTITYX_RUN_BENCHMARKS false CACHE BOOL "Run benchmarks (in conjunction with -DENTITYX_BUILD_TESTING=1).")
+set(ENTITYX_MAX_COMPONENTS 64 CACHE STRING "Set the maximum number of components.")
+set(ENTITYX_DT_TYPE double CACHE STRING "The type used for delta time in EntityX update methods.")
+set(ENTITYX_BUILD_SHARED false CACHE BOOL "Build shared libraries?")
+add_subdirectory(entityx)
