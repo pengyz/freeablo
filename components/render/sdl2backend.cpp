@@ -617,7 +617,7 @@ namespace Render
     
     void drawMinPillarTop(SDL_Surface* s, int x, int y, const std::vector<int16_t>& pillar, Cel::CelFile& tileset);
     void drawMinPillarBase(SDL_Surface* s, int x, int y, const std::vector<int16_t>& pillar, Cel::CelFile& tileset);
-    
+
     SpriteGroup* loadTilesetSprite(const std::string& celPath, const std::string& minPath, bool top)
     {
         Cel::CelFile cel(celPath);

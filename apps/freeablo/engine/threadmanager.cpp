@@ -126,7 +126,7 @@ namespace Engine
 
             case RENDER_STATE:
             {
-				if (mRenderState && mRenderState != message.data.renderState)
+                if (mRenderState && mRenderState != message.data.renderState)
                     mRenderState->ready = true;
 
                 mRenderState = message.data.renderState;

@@ -83,7 +83,7 @@ namespace FAWorld
             townActors.push_back(actor);
         }
 
-        auto tmp = new GameLevel(townLevelBase, 0, townActors);
+        auto tmp = new GameLevel(std::move(townLevelBase), 0, townActors);
         mLevels[0] = tmp;
 
 
