@@ -8,7 +8,7 @@ namespace FAEentityComponentSystem {
     {
         auto entities = es.entities_with_components<Sprite>();
         for (auto entity : entities) {
-            //ªÊ÷∆£ø
+
         }
     }
 
