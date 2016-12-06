@@ -3,15 +3,32 @@
 
 
 namespace FAEentityComponentSystem {
-
-    void RenderSystem::update(entityx::EntityManager & es, entityx::EventManager & events, entityx::TimeDelta)
+    RenderSystem::RenderSystem(FARender::Renderer * render):
+        render(render)
     {
-        auto entities = es.entities_with_components<Sprite>();
-        for (auto entity : entities) {
+    }
+    void RenderSystem::update(ex::EntityManager & es, ex::EventManager & events, ex::TimeDelta)
+    {
+        /*es.each<ESprite>([](ex::Entity entity, ESprite& sprite) {
 
-        }
+        });*/
+        
+    }
+
+    GameWorld::GameWorld()
+    {
+        systems.add<RenderSystem>(FARender::Renderer::get());
+
+        systems.configure();
+    }
+
+    void GameWorld::update(ex::TimeDelta dt)
+    {
+        systems.update_all(dt);
     }
 
 
-   
+
 }
+
+

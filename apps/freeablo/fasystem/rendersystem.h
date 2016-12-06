@@ -4,14 +4,14 @@
     Systems:
     RenderSystem                    Render the world
     InputSystm                      process the input device events.
-    SoundSystem                     sound display 
+    SoundSystem                     sound display
     DamageSystem                    Caculate the Damages
     DropSystem                      Caculate Drops,quality,type,etc
     AISystem                        the ai
     QuestionSystem                  the question systems.
     SkillSystem?                    the skill points and skill learning?
     GUISystem                       game gui
-    NetSystem                       multi player and the networks
+    //NetSystem                       multi player and the networks
     Affix
     EventSystem                     the event
 
@@ -23,7 +23,7 @@
     EquipSlot                       the equipment slot that we can wear the equip.
     CollisionBody                   the collision body check the collision between another.
     Tiled                           tiled set
-
+    EventDispatcher                 the event dispatcher system component
 
 
     ---GUI?----
@@ -32,12 +32,13 @@
     ScrollView
 
 
+
     Prefabs
     Rule Words
 
 
 
-    
+
  */
 
 
@@ -45,37 +46,70 @@
 #define FA_RENDERSYSTEM_H
 
 #include "entityx.h"
+#include "../farender/renderer.h"
+
+
+
+namespace ex = entityx;
 
 
 namespace FAEentityComponentSystem {
 
 
-    class RenderSystem :public entityx::System<RenderSystem> {
+    /**
+     **Render System
+     **/
+    class RenderSystem :public ex::System<RenderSystem> {
     public:
-        void update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta) override;
+        explicit RenderSystem(FARender::Renderer* render);
+        void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta) override;
+
+    private:
+        FARender::Renderer* render;
+
+
+    };
+
+    /**
+     **Collision System
+     **/
+    class CollisionSystem :public ex::System<CollisionSystem> {
+
+    };
+
+
+    /**
+     **Transform System
+     ***/
+    class TransformSystem :public ex::System<TransformSystem> {
 
 
     };
 
 
+    class ParticleSystem :public ex::System<ParticleSystem> {
 
-    class Sprite :public entityx::Entity {
+    };
+
+
+    //this is the whole world
+    class GameWorld :public ex::EntityX {
     public:
-
-
-
+        explicit GameWorld();
+        void update(ex::TimeDelta dt);
     };
 
 
-    class TranslationSystem :public entityx::System<TranslationSystem> {
-
-
+    struct Position {
+        Position(int32_t x, int32_t y) :
+            x(x), y(y) {}
+        int32_t x;
+        int32_t y;
     };
 
-    class Position :public entityx::Entity {
-    public:
-        std::pair<int32_t, int32_t> pos;
-    };
+
+
+
 
 }
 
