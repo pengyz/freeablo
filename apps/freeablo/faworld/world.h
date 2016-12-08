@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "../engine/inputobserverinterface.h"
+#include "../entityx/entityx.h"
 
 
 namespace FARender
@@ -24,7 +25,7 @@ namespace FAWorld
     class Player;
     class GameLevel;
 
-    class World : public Engine::KeyboardInputObserverInterface, public Engine::MouseInputObserverInterface
+    class World : public Engine::KeyboardInputObserverInterface, public Engine::MouseInputObserverInterface,public entityx::EntityX
     {
         public:
             World(const DiabloExe::DiabloExe& exe);

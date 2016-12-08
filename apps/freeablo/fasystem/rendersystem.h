@@ -86,7 +86,7 @@ namespace FAEentityComponentSystem {
 
     };
 
-
+    //аёвсо╣мЁ
     class ParticleSystem :public ex::System<ParticleSystem> {
 
     };

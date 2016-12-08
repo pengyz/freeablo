@@ -14,6 +14,9 @@
 #include "actor.h"
 #include "player.h"
 #include "gamelevel.h"
+#include "../fasystem/rendersystem.h"
+
+using namespace FAEentityComponentSystem;
 
 namespace FAWorld
 {
@@ -22,6 +25,10 @@ namespace FAWorld
     World::World(const DiabloExe::DiabloExe& exe) : mDiabloExe(exe)
     {
         assert(singletonInstance == nullptr);
+        //add all system
+        systems.add<RenderSystem>(FARender::Renderer::get());
+
+        systems.configure();
         singletonInstance = this;        
     }
 
@@ -180,6 +187,7 @@ namespace FAWorld
                 level->update(noclip, mTicksPassed);
             }
         }
+        systems.update_all(dt);
     }
 
     Player* World::getCurrentPlayer()
