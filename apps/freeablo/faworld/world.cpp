@@ -90,7 +90,7 @@ namespace FAWorld
 
         for (int32_t i = 1; i < 17; i++)
         {
-            mLevels[i] = FALevelGen::generate(100, 100, i, mDiabloExe, i - 1, i + 1);
+            mLevels[i] = nullptr;
         }
     }
 
@@ -109,7 +109,7 @@ namespace FAWorld
         if (level >= mLevels.size() || (mCurrentPlayer->getLevel() && mCurrentPlayer->getLevel()->getLevelIndex() == level))
             return;
 
-        mCurrentPlayer->setLevel(mLevels[level]);
+        mCurrentPlayer->setLevel(getLevel(level));
         playLevelMusic(level);
     }
 
@@ -151,6 +151,10 @@ namespace FAWorld
 
     GameLevel* World::getLevel(size_t level)
     {
+        if (nullptr == mLevels[level])
+        {
+            mLevels[level] = FALevelGen::generate(100, 100, level, mDiabloExe, level - 1, level + 1);
+        }
         return mLevels[level];
     }
 
@@ -213,10 +217,13 @@ namespace FAWorld
     {
         for (auto levelPair : mLevels)
         {
-            auto actor = levelPair.second->getActorById(id);
+            if (nullptr != levelPair.second)
+            {
+                auto actor = levelPair.second->getActorById(id);
 
-            if (actor)
-                return actor;
+                if (actor)
+                    return actor;
+            }
         }
 
         return NULL;
@@ -225,7 +232,10 @@ namespace FAWorld
     void World::getAllActors(std::vector<Actor*>& actors)
     {
         for (auto pair : mLevels)
-            pair.second->getActors(actors);
+        {
+            if (nullptr != pair.second)
+                pair.second->getActors(actors);
+        }
     }
 
     void World::changeLevel(bool up)

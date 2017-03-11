@@ -13,7 +13,7 @@
 
 namespace FAGui
 {
-    std::string cursorPath;
+    //std::string cursorPath;
     uint32_t cursorFrame;
 
     void FAPythonFuncs::openDialogue(const char* document)
@@ -246,12 +246,12 @@ namespace FAGui
                         if(item.getGraphicValue() > 179)
                         {
 
-                            cursorPath = "";
+                            //cursorPath = "";
                             cursorFrame = 0;
                         }
                         else
                         {
-                            cursorPath = "data/inv/objcurs.cel";
+                            //cursorPath = "data/inv/objcurs.cel";
                             cursorFrame = item.getGraphicValue();
 
                         }
@@ -266,7 +266,7 @@ namespace FAGui
             item = mPlayerInv.getItemAt(FAWorld::Item::eqCURSOR);
             if(mPlayerInv.putItem(item, to, FAWorld::Item::eqCURSOR, toY, toX))
             {
-                cursorPath = "";
+                //cursorPath = "";
                 cursorFrame = 0;
             }
 
@@ -277,7 +277,7 @@ namespace FAGui
             item = mPlayerInv.getItemAt(FAWorld::Item::eqCURSOR);
             if(mPlayerInv.putItem(item, to, FAWorld::Item::eqCURSOR, toY, toX))
             {
-                cursorPath = "";
+                //cursorPath = "";
                 cursorFrame = 0;
             }
 
@@ -287,7 +287,7 @@ namespace FAGui
             item = mPlayerInv.getItemAt(FAWorld::Item::eqCURSOR);
             if (mPlayerInv.putItem(item, to, FAWorld::Item::eqCURSOR, toY, toX))
             {
-                cursorPath = "";
+                //cursorPath = "";
                 cursorFrame = 0;
             }
 
@@ -298,7 +298,7 @@ namespace FAGui
             item = mPlayerInv.getItemAt(from, fromY, fromX);
             if(mPlayerInv.putItem(item, to, from, toY, toX, beltX))
             {
-                cursorPath = "";
+                //cursorPath = "";
                 cursorFrame = 0;
             }
 

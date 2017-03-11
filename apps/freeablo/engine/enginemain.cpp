@@ -145,10 +145,10 @@ namespace Engine
                 if(level != NULL)
                     state->tileset = renderer.getTileset(*level);
                 state->level = level;
-                if(!FAGui::cursorPath.empty())
+                /*if(!FAGui::cursorPath.empty())
                     state->mCursorEmpty = false;
                 else
-                    state->mCursorEmpty = true;
+                    state->mCursorEmpty = true;*/
                 state->mCursorFrame = FAGui::cursorFrame;
                 state->mCursorSpriteGroup = renderer.loadImage("data/inv/objcurs.cel");
                 world.fillRenderState(state);

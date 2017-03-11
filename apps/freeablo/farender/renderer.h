@@ -53,7 +53,7 @@ namespace FARender
         FASpriteGroup* mCursorSpriteGroup;
         uint32_t mCursorFrame;
 
-        bool mCursorEmpty;
+        //bool mCursorEmpty;
 
         RenderState():ready(true) {}
     };

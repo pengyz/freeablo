@@ -26,12 +26,12 @@ namespace FARender
     {
         return mRenderer;
     }
-                                  
+
 
     Renderer::Renderer(int32_t windowWidth, int32_t windowHeight, bool fullscreen)
         :mDone(false)
-        ,mRocketContext(NULL)
-        ,mSpriteManager(1024)
+        , mRocketContext(NULL)
+        , mSpriteManager(1024)
     {
         assert(!mRenderer); // singleton, only one instance
 
@@ -43,10 +43,10 @@ namespace FARender
             settings.fullscreen = fullscreen;
 
             Render::init(settings);
-            
+
             mRocketContext = Render::initGui(std::bind(&Renderer::loadGuiTextureFunc, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                                             std::bind(&Renderer::generateGuiTextureFunc, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                                             std::bind(&Renderer::releaseGuiTextureFunc, this, std::placeholders::_1));
+                std::bind(&Renderer::generateGuiTextureFunc, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                std::bind(&Renderer::releaseGuiTextureFunc, this, std::placeholders::_1));
             mRenderer = this;
         }
     }
@@ -57,22 +57,22 @@ namespace FARender
 
         size_t celIndex = 0;
 
-        if(components.size() == 0)
+        if (components.size() == 0)
             return false;
         std::string sourcePath = components[0];
 
 
-        for(size_t i = 1; i < components.size(); i++)
+        for (size_t i = 1; i < components.size(); i++)
         {
             std::vector<std::string> pair = Misc::StringUtils::split(components[i], '=');
 
-            if(pair.size() != 2)
+            if (pair.size() != 2)
             {
                 std::cerr << "Invalid image filename param " << components[i] << std::endl;
                 continue;
             }
 
-            if(pair[0] == "frame")
+            if (pair[0] == "frame")
             {
                 std::istringstream ss2(pair[1]);
                 ss2 >> celIndex;
@@ -115,7 +115,7 @@ namespace FARender
     {
         Render::RocketFATex* tex = (Render::RocketFATex*)texture_handle;
 
-        if(tex->needsImmortal)
+        if (tex->needsImmortal)
             mSpriteManager.setImmortal(tex->spriteIndex, false);
 
         delete tex;
@@ -145,9 +145,9 @@ namespace FARender
 
     RenderState* Renderer::getFreeState()
     {
-        for(size_t i = 0; i < 15; i++)
+        for (size_t i = 0; i < 15; i++)
         {
-            if(mStates[i].ready)
+            if (mStates[i].ready)
             {
                 mStates[i].ready = false;
                 return &mStates[i];
@@ -161,7 +161,7 @@ namespace FARender
     {
         Engine::ThreadManager::get()->sendRenderState(current);
     }
-    
+
     FASpriteGroup* Renderer::loadImage(const std::string& path)
     {
         return mSpriteManager.get(path);
@@ -195,13 +195,13 @@ namespace FARender
     void Renderer::waitUntilDone()
     {
         std::unique_lock<std::mutex> lk(mDoneMutex);
-        if(!mAlreadyExited)
+        if (!mAlreadyExited)
             mDoneCV.wait(lk);
     }
 
     bool Renderer::renderFrame(RenderState* state)
     {
-        if(mDone)
+        if (mDone)
         {
             {
                 std::unique_lock<std::mutex> lk(mDoneMutex);
@@ -211,23 +211,23 @@ namespace FARender
             return false;
         }
 
-        if(state)
+        if (state)
         {
-            
-            if(state->level)
+
+            if (state->level)
             {
-                if(mLevelObjects.width() != state->level->width() || mLevelObjects.height() != state->level->height())
+                if (mLevelObjects.width() != state->level->width() || mLevelObjects.height() != state->level->height())
                     mLevelObjects.resize(state->level->width(), state->level->height());
 
-                for(size_t x = 0; x < mLevelObjects.width(); x++)
+                for (size_t x = 0; x < mLevelObjects.width(); x++)
                 {
-                    for(size_t y = 0; y < mLevelObjects.height(); y++)
+                    for (size_t y = 0; y < mLevelObjects.height(); y++)
                     {
                         mLevelObjects[x][y].valid = false;
                     }
                 }
 
-                for(size_t i = 0; i < state->mObjects.size(); i++)
+                for (size_t i = 0; i < state->mObjects.size(); i++)
                 {
                     FAWorld::Position & position = std::get<2>(state->mObjects[i]);
 
@@ -249,7 +249,7 @@ namespace FARender
             Render::drawGui(state->guiDrawBuffer, &mSpriteManager);
             Renderer::setCursor(state);
         }
-        
+
         Render::draw();
 
         return true;
@@ -257,15 +257,15 @@ namespace FARender
     void Renderer::setCursor(RenderState * State)
     {
 
-        if(!State->mCursorEmpty)
+        //if (!State->mCursorEmpty)
         {
             Render::Sprite sprite = mSpriteManager.get(State->mCursorSpriteGroup->getCacheIndex())->operator [](State->mCursorFrame);
             Render::drawCursor(sprite, State->mCursorSpriteGroup->getWidth(), State->mCursorSpriteGroup->getHeight());
         }
-        else
+        /*else
         {
             Render::drawCursor(NULL);
-        }
+        }*/
         return;
 
     }

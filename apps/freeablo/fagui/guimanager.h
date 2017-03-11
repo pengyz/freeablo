@@ -99,7 +99,7 @@ namespace FAGui
         std::shared_ptr<ScrollBox> mDialogueScrollBox;
     };
 
-    extern std::string cursorPath;
+    //extern std::string cursorPath;
 
     extern uint32_t cursorFrame;
 }
