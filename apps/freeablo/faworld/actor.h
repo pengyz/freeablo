@@ -67,7 +67,8 @@ namespace FAWorld
             void setIdleAnimation(const std::string path);            
             AnimState::AnimState getAnimState();
             bool findPath(GameLevelImpl* level, std::pair<int32_t, int32_t> destination);
-
+            virtual bool onHit();
+            void setHitTarget(Actor* actor);
 
             int32_t getId()
             {
@@ -206,6 +207,7 @@ namespace FAWorld
 
         protected:
             GameLevel* mLevel = NULL;
+            Actor* mTargetActor;     //attack target
 
             bool mIsDead = false;
             bool mCanTalk = false;
@@ -244,6 +246,8 @@ namespace FAWorld
         private:
             std::string mActorId;
             int32_t mId;
+
+
             friend class Engine::Server; // TODO: fix
             friend class Engine::Client;
             friend class Engine::NetManager;

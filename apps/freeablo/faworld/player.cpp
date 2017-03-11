@@ -10,7 +10,7 @@ namespace FAWorld
 {
     STATIC_HANDLE_NET_OBJECT_IN_IMPL(Player)
 
-    Player::Player() : Actor(), mInventory(this)
+        Player::Player() : Actor(), mInventory(this)
     {
         //TODO: hack - need to think of some more elegant way of handling Actors in general
         DiabloExe::CharacterStats stats;
@@ -49,13 +49,11 @@ namespace FAWorld
 
     bool Player::attack(Actor *enemy)
     {
-        if(enemy->isDead() && enemy->mStats != nullptr)
+        if (enemy->isDead() && enemy->mStats != nullptr)
             return false;
+        setHitTarget(enemy);
         isAttacking = true;
-        Engine::ThreadManager::get()->playSound(FALevelGen::chooseOne({"sfx/misc/swing2.wav", "sfx/misc/swing.wav"}));
-        enemy->takeDamage((uint32_t)mStats->getMeleeDamage());
-        if(enemy->getCurrentHP() <= 0)
-            enemy->die();
+        Engine::ThreadManager::get()->playSound(FALevelGen::chooseOne({ "sfx/misc/swing2.wav", "sfx/misc/swing.wav" }));
         setAnimation(AnimState::attack, true);
         mAnimPlaying = true;
         return true;
@@ -80,10 +78,10 @@ namespace FAWorld
 
             talkTo(actor->getActorId().c_str());
         }
-        catch(...)
+        catch (...)
         {
-                PyErr_Print();
-                PyErr_Clear();
+            PyErr_Print();
+            PyErr_Clear();
         }
 
         return true;
@@ -105,17 +103,17 @@ namespace FAWorld
 
         updateSpriteFormatVars();
 
-        if( lastClassName   != mFmtClassName   ||
-            lastClassCode   != mFmtClassCode   ||
-            lastWeaponCode  != mFmtWeaponCode  ||
-            lastArmourCode  != mFmtArmourCode  ||
-            lastInDungeon   != mFmtInDungeon   )
+        if (lastClassName != mFmtClassName ||
+            lastClassCode != mFmtClassCode ||
+            lastWeaponCode != mFmtWeaponCode ||
+            lastArmourCode != mFmtArmourCode ||
+            lastInDungeon != mFmtInDungeon)
         {
-            auto helper = [&] (bool isDie = false)
+            auto helper = [&](bool isDie = false)
             {
                 std::string weapFormat = mFmtWeaponCode;
 
-                if(isDie)
+                if (isDie)
                     weapFormat = "n";
 
                 boost::format fmt("plrgfx/%s/%s%s%s/%s%s%s%s.cl2");
@@ -128,7 +126,7 @@ namespace FAWorld
             mDieAnim = renderer->loadImage((helper(true) % "dt").str());
             mAttackAnim = renderer->loadImage((helper() % "at").str());
 
-            if(mFmtInDungeon)
+            if (mFmtInDungeon)
             {
                 mWalkAnim = renderer->loadImage((helper() % "aw").str());
                 mIdleAnim = renderer->loadImage((helper() % "as").str());
@@ -146,102 +144,102 @@ namespace FAWorld
     void Player::updateSpriteFormatVars()
     {
         std::string armour, weapon;
-        switch(mInventory.mBody.getCode())
+        switch (mInventory.mBody.getCode())
         {
-               case Item::icHeavyArmour:
-               {
-                    armour="h";
-                    break;
-               }
-
-               case Item::icMidArmour:
-               {
-                    armour="m";
-                    break;
-               }
-
-               case Item::icLightArmour:
-               default:
-               {
-                    armour="l";
-                    break;
-               }
+        case Item::icHeavyArmour:
+        {
+            armour = "h";
+            break;
         }
-        if(mInventory.mLeftHand.isEmpty() && mInventory.mRightHand.isEmpty())
+
+        case Item::icMidArmour:
+        {
+            armour = "m";
+            break;
+        }
+
+        case Item::icLightArmour:
+        default:
+        {
+            armour = "l";
+            break;
+        }
+        }
+        if (mInventory.mLeftHand.isEmpty() && mInventory.mRightHand.isEmpty())
         {
             weapon = "n";
         }
-        else if((mInventory.mLeftHand.isEmpty() && !mInventory.mRightHand.isEmpty()) || (!mInventory.mLeftHand.isEmpty() && mInventory.mRightHand.isEmpty()))
+        else if ((mInventory.mLeftHand.isEmpty() && !mInventory.mRightHand.isEmpty()) || (!mInventory.mLeftHand.isEmpty() && mInventory.mRightHand.isEmpty()))
         {
             Item hand;
 
-            if(mInventory.mRightHand.isEmpty())
+            if (mInventory.mRightHand.isEmpty())
                 hand = mInventory.mLeftHand;
             else
                 hand = mInventory.mRightHand;
-            switch(hand.getCode())
+            switch (hand.getCode())
             {
-                case Item::icAxe:
-                {
-                    if(hand.getEquipLoc() == Item::eqONEHAND)
-                        weapon = "s";
-                    else
-                        weapon = "a";
-                    break;
-                }
-
-                case Item::icBlunt:
-                {
-                    weapon = "m";
-                    break;
-                }
-
-                case Item::icBow:
-                {
-                    weapon = "b";
-                    break;
-                }
-
-                case Item::icShield:
-                {
-                    weapon = "u";
-                    break;
-                }
-
-                case Item::icSword:
-                {
+            case Item::icAxe:
+            {
+                if (hand.getEquipLoc() == Item::eqONEHAND)
                     weapon = "s";
-                    break;
-                }
+                else
+                    weapon = "a";
+                break;
+            }
 
-                default:
-                {
-                    weapon = "n";
-                    break;
-                }
+            case Item::icBlunt:
+            {
+                weapon = "m";
+                break;
+            }
+
+            case Item::icBow:
+            {
+                weapon = "b";
+                break;
+            }
+
+            case Item::icShield:
+            {
+                weapon = "u";
+                break;
+            }
+
+            case Item::icSword:
+            {
+                weapon = "s";
+                break;
+            }
+
+            default:
+            {
+                weapon = "n";
+                break;
+            }
             }
         }
 
-        else if(!mInventory.mLeftHand.isEmpty() && !mInventory.mRightHand.isEmpty())
+        else if (!mInventory.mLeftHand.isEmpty() && !mInventory.mRightHand.isEmpty())
         {
-            if((mInventory.mLeftHand.getCode() == Item::icSword && mInventory.mRightHand.getCode() == Item::icShield) || (mInventory.mLeftHand.getCode() == Item::icShield && mInventory.mRightHand.getCode() == Item::icSword))
+            if ((mInventory.mLeftHand.getCode() == Item::icSword && mInventory.mRightHand.getCode() == Item::icShield) || (mInventory.mLeftHand.getCode() == Item::icShield && mInventory.mRightHand.getCode() == Item::icSword))
                 weapon = "d";
 
-            else if(mInventory.mLeftHand.getCode() == Item::icBow && mInventory.mRightHand.getCode() == Item::icBow)
+            else if (mInventory.mLeftHand.getCode() == Item::icBow && mInventory.mRightHand.getCode() == Item::icBow)
                 weapon = "b";
 
-            else if(mInventory.mLeftHand.getCode() == Item::icStave && mInventory.mRightHand.getCode() == Item::icStave)
+            else if (mInventory.mLeftHand.getCode() == Item::icStave && mInventory.mRightHand.getCode() == Item::icStave)
                 weapon = "t";
-            else if(mInventory.mLeftHand.getCode() == Item::icBlunt || mInventory.mRightHand.getCode() == Item::icBlunt)
+            else if (mInventory.mLeftHand.getCode() == Item::icBlunt || mInventory.mRightHand.getCode() == Item::icBlunt)
                 weapon = "h";
         }
         mFmtWeaponCode = weapon;
         mFmtArmourCode = armour;
 
-        if(mLevel && mLevel->getLevelIndex() != 0)
-            mFmtInDungeon=true;
+        if (mLevel && mLevel->getLevelIndex() != 0)
+            mFmtInDungeon = true;
         else
-            mFmtInDungeon=false;
+            mFmtInDungeon = false;
     }
 
     void Player::setLevel(GameLevel *level)
