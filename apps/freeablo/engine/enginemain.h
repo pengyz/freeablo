@@ -28,6 +28,8 @@ namespace Engine
             void run(const boost::program_options::variables_map& variables);
             void stop();
             void togglePause();
+            inline bool isPaused(){return mPaused;}
+            inline void setPause(bool bPause){mPaused = bPause;}
             void toggleNoclip();
             void notify(KeyboardInputAction action);
 

@@ -1,13 +1,8 @@
 #include "guimanager.h"
-
 #include <string>
-
 #include <input/hotkey.h>
-
 #include "../faworld/world.h"
-#include "../farender/renderer.h"
 #include "../engine/threadmanager.h"
-#include "../engine/enginemain.h"
 
 
 
@@ -17,6 +12,7 @@ namespace FAGui
 
     GuiManager::GuiManager(Engine::EngineMain& engine)
         : mEngine(engine)
+        , mGuiFlag(0)
     {
 
     }
@@ -30,44 +26,131 @@ namespace FAGui
         ctx->style.window.padding = nk_vec2(0, 0);
 
         if (nk_begin(ctx, title, bounds, flags))
+        {
             action();
-
-        nk_end(ctx);
+            nk_end(ctx);
+        }
 
         ctx->style.window.fixed_background = tmpBg;
         ctx->style.window.padding = tmpPadding;
     }
 
-    void pauseMenu(nk_context* ctx, Engine::EngineMain& engine)
+    void GuiManager::pauseMenu()
     {
         FARender::Renderer* renderer = FARender::Renderer::get();
+        nk_context* ctx = renderer->getNuklearContext();
 
         int32_t screenW, screenH;
         renderer->getWindowDimensions(screenW, screenH);
 
         nk_style_push_style_item(ctx, &ctx->style.window.fixed_background, nk_style_item_color(nk_rgba(0, 0, 0, 0)));
 
-        if (nk_begin(ctx, "pause menu", nk_rect(0, 0, screenW, screenH), 0))
+        if (nk_begin(ctx, mPauseMenuName, nk_rect(0, 0, screenW, screenH), 0))
         {
             nk_layout_row_dynamic(ctx, 30, 1);
             
             nk_label(ctx, "PAUSED", NK_TEXT_CENTERED);
 
-            if (nk_button_label(ctx, "Resume"))
-                engine.togglePause();
+            if (nk_button_label(ctx, "Resume")){
+                mEngine.togglePause();
+            }
 
             if (nk_button_label(ctx, "Quit"))
-                engine.stop();
+                mEngine.stop();
+            nk_end(ctx);
         }
-        nk_end(ctx);
 
         nk_style_pop_style_item(ctx);
     }
 
-    void bottomMenu(nk_context* ctx)
+    void GuiManager::invetoryDialog(int characterType)
+    {
+        const char *invetoryPath = nullptr;
+        switch (characterType)
+        {
+            case 0: invetoryPath = "data/inv/inv.cel"; break;
+            case 1: invetoryPath = "data/inv/inv_rog.cel"; break;
+            case 2: invetoryPath = "data/inv/inv_sor.cel"; break;
+            default: assert(false && "characterType not supported !");break;
+        }
+
+        FARender::Renderer *renderer = FARender::Renderer::get();
+        nk_context* ctx = renderer->getNuklearContext();
+        FARender::FASpriteGroup *invetoryTex = renderer->loadImage(invetoryPath);
+
+        int32_t invetoryWidth = invetoryTex->getWidth();
+        int32_t invetoryHeight = invetoryTex->getHeight();
+
+        int32_t screenW,screenH;
+        renderer->getWindowDimensions(screenW,screenH);
+        struct nk_rect dims = nk_rect((screenW / 2) - (invetoryWidth / 2), (screenH  - invetoryHeight) / 4, invetoryWidth, invetoryHeight);
+
+        nk_fa_begin_image_window(ctx, mInvetoryDialogName, dims, NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_TITLE | NK_WINDOW_MOVABLE, invetoryTex->getNkImage(), [&](){
+            //aha, let's do something else to make the invetory more useful.
+        });
+
+    }
+
+
+    void GuiManager::characterInfoDialog()
+    {
+        FARender::Renderer *renderer = FARender::Renderer::get();
+        nk_context* ctx = renderer->getNuklearContext();
+        FARender::FASpriteGroup *invetoryTex = renderer->loadImage("data/char.cel");
+
+        int32_t invetoryWidth = invetoryTex->getWidth();
+        int32_t invetoryHeight = invetoryTex->getHeight();
+
+        int32_t screenW,screenH;
+        renderer->getWindowDimensions(screenW,screenH);
+        struct nk_rect dims = nk_rect((screenW / 2) - (invetoryWidth / 2), (screenH  - invetoryHeight) / 4, invetoryWidth, invetoryHeight);
+
+        nk_fa_begin_image_window(ctx, mCharacterInfoDialogName, dims, NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_TITLE | NK_WINDOW_MOVABLE, invetoryTex->getNkImage(), [&](){
+            //aha, let's do something else to make it more useful.
+        });
+
+    }
+
+    void GuiManager::spellsDialog()
+    {
+        FARender::Renderer *renderer = FARender::Renderer::get();
+        nk_context* ctx = renderer->getNuklearContext();
+        FARender::FASpriteGroup *invetoryTex = renderer->loadImage("data/spellbk.cel");
+
+        int32_t invetoryWidth = invetoryTex->getWidth();
+        int32_t invetoryHeight = invetoryTex->getHeight();
+
+        int32_t screenW,screenH;
+        renderer->getWindowDimensions(screenW,screenH);
+        struct nk_rect dims = nk_rect((screenW / 2) - (invetoryWidth / 2), (screenH  - invetoryHeight) / 4, invetoryWidth, invetoryHeight);
+
+        nk_fa_begin_image_window(ctx, mSpellsDialogName, dims, NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_TITLE | NK_WINDOW_MOVABLE, invetoryTex->getNkImage(), [&](){
+            //aha, let's do something else to make it more useful.
+        });
+    }
+
+    void GuiManager::questDialog()
+    {
+        FARender::Renderer *renderer = FARender::Renderer::get();
+        nk_context* ctx = renderer->getNuklearContext();
+        FARender::FASpriteGroup *invetoryTex = renderer->loadImage("data/quest.cel");
+
+        int32_t invetoryWidth = invetoryTex->getWidth();
+        int32_t invetoryHeight = invetoryTex->getHeight();
+
+        int32_t screenW,screenH;
+        renderer->getWindowDimensions(screenW,screenH);
+        struct nk_rect dims = nk_rect((screenW / 2) - (invetoryWidth / 2), (screenH  - invetoryHeight) / 4, invetoryWidth, invetoryHeight);
+
+        nk_fa_begin_image_window(ctx, mQuestDialogName, dims, NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_TITLE | NK_WINDOW_MOVABLE, invetoryTex->getNkImage(), [&](){
+            //aha, let's do something else to make it more useful.
+        });
+    }
+
+    void GuiManager::bottomMenu()
     {
         FARender::Renderer* renderer = FARender::Renderer::get();
-
+        nk_context* ctx = renderer->getNuklearContext();
         // The bottom menu is made of two sprites: panel8.cel, which is the background,
         // and panel8bu.cel, which contains overlays for each button. It's pretty primitive,
         // the buttons are baked into the background image.
@@ -102,7 +185,7 @@ namespace FAGui
         renderer->getWindowDimensions(screenW, screenH);
         struct nk_rect dims = nk_rect((screenW / 2) - (bottomMenuWidth / 2), screenH - bottomMenuHeight, bottomMenuWidth, bottomMenuHeight);
 
-        nk_fa_begin_image_window(ctx, "bottom_menu", dims, NK_WINDOW_NO_SCROLLBAR, bottomMenuTex->getNkImage(), [&]()
+        nk_fa_begin_image_window(ctx, mBottomMenuName, dims, NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BACKGROUND, bottomMenuTex->getNkImage(), [&,this]()
         {
             nk_layout_space_begin(ctx, NK_STATIC, buttonHeight, INT_MAX);
 
@@ -120,11 +203,17 @@ namespace FAGui
 
             // CHAR button
             if (bottomMenuButton(buttonRow1TopIndent, buttonLeftIndent, charButtonFrame))
+            {
+                this->toggle(FA_GUI_CHARACTER);
                 std::cout << "pressed CHAR" << std::endl;
+            }
 
             // QUEST button
             if (bottomMenuButton(buttonRow2TopIndent, buttonLeftIndent, questButtonFrame))
+            {
+                this->toggle(FA_GUI_QUEST);
                 std::cout << "pressed QUEST" << std::endl;
+            }
 
             // MAP button
             if (bottomMenuButton(buttonRow3TopIndent, buttonLeftIndent, mapButtonFrame))
@@ -132,25 +221,75 @@ namespace FAGui
 
             // MENU button
             if (bottomMenuButton(buttonRow4TopIndent, buttonLeftIndent, menuButtonFrame))
+            {
+                mEngine.setPause(true);
                 std::cout << "pressed MENU" << std::endl;
+            }
 
             // INV button
             if (bottomMenuButton(buttonRow1TopIndent, buttonRightIndent, invButtonFrame))
+            {
+                this->toggle(FA_GUI_INVETORY);
                 std::cout << "pressed INV" << std::endl;
+            }
 
             // SPELLS button
             if (bottomMenuButton(buttonRow2TopIndent, buttonRightIndent, spellsButtonFrame))
+            {
+                this->toggle(FA_GUI_SPELLS);
                 std::cout << "pressed SPELLS" << std::endl;
-
+            }
             nk_layout_space_end(ctx);
         });
     }
 
-    void GuiManager::update(bool paused, nk_context* ctx)
+    void GuiManager::update(bool paused)
     {
-        bottomMenu(ctx);
-
-        if (paused)
-            pauseMenu(ctx, mEngine);
+        bottomMenu();
+        updatePauseMenu(paused);
+        updateInvetoryDialog(1);
+        updateCharacterInfoDialog();
+        updateSpellsDialog();
+        updateQuestDialog();
     }
+
+    void GuiManager::updateInvetoryDialog(int charType) {
+        if(isSet(FA_GUI_INVETORY))
+            invetoryDialog(charType);
+        else
+            nk_window_close(getNkContext(),mInvetoryDialogName);
+    }
+
+    void GuiManager::updatePauseMenu(bool bPause)
+    {
+        if (bPause)
+            pauseMenu();
+        else
+            nk_window_close(getNkContext(),mPauseMenuName);
+    }
+
+    void GuiManager::updateCharacterInfoDialog()
+    {
+        if(isSet(FA_GUI_CHARACTER))
+            characterInfoDialog();
+        else
+            nk_window_close(getNkContext(),mCharacterInfoDialogName);
+    }
+
+    void GuiManager::updateSpellsDialog()
+    {
+        if(isSet(FA_GUI_SPELLS))
+            spellsDialog();
+        else
+            nk_window_close(getNkContext(),mSpellsDialogName);
+    }
+
+    void GuiManager::updateQuestDialog()
+    {
+        if(isSet(FA_GUI_QUEST))
+            questDialog();
+        else
+            nk_window_close(getNkContext(),mQuestDialogName);
+    }
+
 }
