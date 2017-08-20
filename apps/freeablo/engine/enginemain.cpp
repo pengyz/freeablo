@@ -132,7 +132,7 @@ namespace Engine
             nk_context* ctx = renderer.getNuklearContext();
 
             netManager.update();
-            guiManager.update(mPaused, ctx);
+            guiManager.update(mPaused);
 
            
 

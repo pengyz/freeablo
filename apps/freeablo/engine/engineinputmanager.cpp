@@ -189,7 +189,7 @@ namespace Engine
         return hotkeys;
     }
 
-    void handleNuklearMouseEvent(nk_context* ctx, int32_t x, int32_t y, Input::Key key, bool isDown, bool isDoubleClick)
+    bool handleNuklearMouseEvent(nk_context* ctx, int32_t x, int32_t y, Input::Key key, bool isDown, bool isDoubleClick)
     {
         int down = isDown;
 
@@ -207,29 +207,46 @@ namespace Engine
         {
             nk_input_button(ctx, NK_BUTTON_RIGHT, x, y, down);
         }
+        //
+        //  nuklear commit shows that we can use this function to decide the input handling way.
+        //  tested that we can't hidden the window, the hidden window will always cause nk_item_is_any_active returns 0.
+        //  just close the window and it works well,but there also a problem:
+        //  FIXME: the bottomMenu image is heigher than it looks beacuse the mana and health ball is higher than the panel. I don't know how to solve it...
+        //
+        /* nk_item_is_any_active - returns if the any window is being hovered or any widget is currently active.
+        *  Can be used to decide if input should be processed by UI or your specific input handling.
+        *  Example could be UI and 3D camera to move inside a 3D space.
+        *  Parameters:
+        *      @ctx must point to an previously initialized `nk_context` struct
+        *  Return values:
+        *      returns 1 if any window is hovered or any item is active or 0 otherwise */
+        return nk_item_is_any_active(ctx);
     }
 
     void EngineInputManager::mouseClick(int32_t x, int32_t y, Input::Key key, bool isDoubleClick)
     {
-        handleNuklearMouseEvent(mNkCtx, x, y, key, true, isDoubleClick);
-
-        if(key == Input::KEY_LEFT_MOUSE)
+        if(!handleNuklearMouseEvent(mNkCtx, x, y, key, true, isDoubleClick))
         {
-            mMousePosition = Point(x,y);
-            mMouseDown = true;
-            mClick = true;
+            if(key == Input::KEY_LEFT_MOUSE)
+            {
+                mMousePosition = Point(x,y);
+                mMouseDown = true;
+                mClick = true;
+            }
         }
     }
 
     void EngineInputManager::mouseRelease(int32_t x, int32_t y, Input::Key key)
     {
-        handleNuklearMouseEvent(mNkCtx, x, y, key, false, false);
+        if(!handleNuklearMouseEvent(mNkCtx, x, y, key, false, false))
+        {
+            if(key == Input::KEY_LEFT_MOUSE)
+                mMouseDown = false;
 
-        if(key == Input::KEY_LEFT_MOUSE)
-            mMouseDown = false;
-
-        notifyMouseObservers(MOUSE_RELEASE, mMousePosition);
+            notifyMouseObservers(MOUSE_RELEASE, mMousePosition);
+        }
     }
+
 
     void EngineInputManager::mouseMove(int32_t x, int32_t y, int32_t xrel, int32_t yrel)
     {
